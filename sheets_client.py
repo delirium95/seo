@@ -1,30 +1,30 @@
-from google.oauth2.service_account import Credentials
-from googleapiclient.discovery import build
-
 from config import settings
+from google_auth import get_sheets_service
 from models import SheetRow
-
-_SCOPES = [
-    "https://www.googleapis.com/auth/spreadsheets",
-]
 
 
 def _get_service():
-    creds = Credentials.from_service_account_file(settings.google_credentials_file, scopes=_SCOPES)
-    return build("sheets", "v4", credentials=creds)
+    return get_sheets_service()
+
+
+def _get_first_sheet_name() -> str:
+    service = _get_service()
+    meta = service.spreadsheets().get(spreadsheetId=settings.google_sheets_id).execute()
+    return meta["sheets"][0]["properties"]["title"]
 
 
 def read_rows() -> list[SheetRow]:
     service = _get_service()
+    sheet_name = _get_first_sheet_name()
     result = (
         service.spreadsheets()
         .values()
-        .get(spreadsheetId=settings.google_sheets_id, range=settings.sheets_range)
+        .get(spreadsheetId=settings.google_sheets_id, range=f"{sheet_name}!A2:D")
         .execute()
     )
     raw_rows = result.get("values", [])
     rows: list[SheetRow] = []
-    for i, row in enumerate(raw_rows, start=2):  # data starts at row 2
+    for i, row in enumerate(raw_rows, start=2):
         if len(row) < 3:
             continue
         keyword = row[0].strip()
@@ -47,7 +47,8 @@ def read_rows() -> list[SheetRow]:
 
 def write_result_link(row_index: int, doc_url: str) -> None:
     service = _get_service()
-    cell_range = f"Sheet1!D{row_index}"
+    sheet_name = _get_first_sheet_name()
+    cell_range = f"{sheet_name}!D{row_index}"
     service.spreadsheets().values().update(
         spreadsheetId=settings.google_sheets_id,
         range=cell_range,

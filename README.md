@@ -47,6 +47,7 @@ One command, full cycle, multiple keywords in one run.
 | `ai_client.py` | Claude API call with structured prompt, returns `GeneratedMeta` as JSON |
 | `sheets_client.py` | Google Sheets read (rows) + write (result URL) |
 | `docs_client.py` | Google Docs creation + `batchUpdate` for content + Drive permission set |
+| `google_auth.py` | OAuth2 flow — first run opens browser, saves `token.json` for subsequent runs |
 
 ---
 
@@ -62,10 +63,12 @@ uv sync
 
 ### 2. Google Cloud credentials
 
-1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Create a project → Enable **Google Sheets API** and **Google Docs API** and **Google Drive API**
-3. Create a **Service Account** → download JSON key → save as `credentials.json` in project root
-4. **Share your Google Sheet** with the service account email (Editor access)
+1. Go to [Google Cloud Console](https://console.cloud.google.com/) → create or select a project
+2. Enable these three APIs: **Google Sheets API**, **Google Docs API**, **Google Drive API**
+3. Go to **APIs & Services → Credentials → Create Credentials → OAuth client ID**
+4. Configure consent screen if prompted (External, add your email as Test User)
+5. Application type: **Desktop app** → download the JSON → save as `credentials.json` in project root
+6. **First run** opens a browser window for Google login — authorize once, token saved to `token.json` automatically. All subsequent runs are fully headless.
 
 ### 3. API keys
 
@@ -131,7 +134,7 @@ The container reads `.env` and mounts `credentials.json` as read-only. No extra 
 
 ## Submission checklist 
 
-- [x] GitHub repo (this one)
-- [ ] Google Sheet link with results (add after demo run)
+- [x] GitHub repo: https://github.com/delirium95/seo
+- [x] Google Sheet: https://docs.google.com/spreadsheets/d/1gX2tOxA5Excpn4zwedneiJAZ5sf7y37Rqo7T5--wDOg/edit
 - [ ] Video demo: 2-3 keywords × different GEOs
 - [x] README with architecture + launch instructions

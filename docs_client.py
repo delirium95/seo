@@ -1,20 +1,9 @@
-from google.oauth2.service_account import Credentials
-from googleapiclient.discovery import build
-
-from config import settings
+from google_auth import get_docs_service, get_drive_service
 from models import GeneratedMeta, ScrapedPage
-
-_SCOPES = [
-    "https://www.googleapis.com/auth/documents",
-    "https://www.googleapis.com/auth/drive",
-]
 
 
 def _get_services():
-    creds = Credentials.from_service_account_file(settings.google_credentials_file, scopes=_SCOPES)
-    docs = build("docs", "v1", credentials=creds)
-    drive = build("drive", "v3", credentials=creds)
-    return docs, drive
+    return get_docs_service(), get_drive_service()
 
 
 def _build_requests(
