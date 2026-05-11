@@ -129,7 +129,7 @@ The container reads `.env` and mounts `credentials.json` as read-only. No extra 
 
 ---
 
-## Submission checklist (for the hiring task)
+## Submission checklist 
 
 - [x] GitHub repo (this one)
 - [ ] Google Sheet link with results (add after demo run)
