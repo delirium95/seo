@@ -1,0 +1,6 @@
+services:
+  seo-automation:
+    build: .
+    env_file: .env
+    volumes:
+      - ./credentials.json:/app/credentials.json:ro
